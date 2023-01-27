@@ -1,5 +1,5 @@
 import { assert } from "assertthat";
-import { encryptKey, decryptKey } from "@/lib/crypto/aeskeywrap";
+import { encryptKey, decryptKey } from "@/lib/crypto/wrapping";
 
 describe("Crypto: Wrapping", (): void => {
   // official test vector from https://datatracker.ietf.org/doc/html/rfc3394#section-4.6
