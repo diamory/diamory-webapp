@@ -75,4 +75,16 @@ describe("Encryption", (): void => {
 
     assert.that(decrypted).is.equalTo(data);
   });
+
+  test("throws exceptions due to invalid data", async (): Promise<void> => {
+    const data = randomBytes(50);
+    const key = randomBytes(32);
+    const additionalData = randomBytes(8).toString("base64");
+    const encrypted = await encryptData(data, key, additionalData);
+    encrypted[81] = encrypted[81] === 0 ? 1 : 0;
+    
+    assert.that(async (): Promise<void> => {
+      await decryptData(encrypted, key, additionalData);
+    }).is.throwingAsync("Cipher job failed");
+  });
 });
