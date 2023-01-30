@@ -16,7 +16,7 @@ const pbkdf2Params = (salt: string, iterations: number) => {
   }
 };
 
-const deriveLoginHash = async (password: string, salt: string, iterations: number): Promise<string> => {
+const deriveHash = async (password: string, salt: string, iterations: number): Promise<string> => {
   const keyMaterial = await subtle.importKey( "raw", Buffer.from(password, "utf8"), "PBKDF2", false, pbkdf2KeyUsages);
   const cryptoKey = await subtle.deriveKey(pbkdf2Params(salt, iterations), keyMaterial, keyAlgo, true, keyUsages);
   const hash = await subtle.exportKey("raw", cryptoKey);
@@ -24,4 +24,4 @@ const deriveLoginHash = async (password: string, salt: string, iterations: numbe
   return Buffer.from(hash).toString("base64");
 };
 
-export { deriveLoginHash };
+export { deriveHash };
