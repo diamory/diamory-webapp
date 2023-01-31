@@ -29,4 +29,4 @@ const updateMasterKey = async (oldPassword: string, newPassword: string, masterk
   return { cost, salt: newSalt, wrappedKey: newWrappedKey };
 }
 
-export { createMasterKey, updateMasterKey, getMasterKey };
+export { createMasterKey, updateMasterKey, getMasterKey, cost };

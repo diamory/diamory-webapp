@@ -1,5 +1,5 @@
 import { assert } from "assertthat";
-import { createMasterKey, updateMasterKey, getMasterKey } from "@/lib/crypto/masterkey";
+import { createMasterKey, updateMasterKey, getMasterKey, cost } from "@/lib/crypto/masterkey";
 import { deriveKey } from "@/lib/crypto/scrypt";
 import { encryptKey } from "@/lib/crypto/wrapping";
 
@@ -18,7 +18,6 @@ const password = "pleaseletmein";
 const password2 = "pleaseletmein42";
 const salt = Buffer.from(new Uint8Array(16).fill(16)).toString("base64");
 const key = new Uint8Array(32).fill(32);
-const cost = 65536;
 
 const getTestValues = async () => {
   const passwordKey = await deriveKey(password, salt, 32, cost, 8, 1);
