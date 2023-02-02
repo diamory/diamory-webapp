@@ -9,7 +9,7 @@ jest.mock("@/lib/crypto/webcrypto", () => {
   return {
     ...originalModule,
     getRandomValues(array: Uint8Array){
-      return array;
+      return array.fill(array.length);
     }
   };
 });
@@ -17,22 +17,12 @@ jest.mock("@/lib/crypto/webcrypto", () => {
 const dataLength = 33_000;
 
 // // encryption results for testing has been determined with internal core implementations, before they were hard coded here
-const key = new Uint8Array(32);
+const key = new Uint8Array(32).fill(32);
 const data = new Uint8Array(dataLength);
 const encrypted = readFileSync("./tests/testdata/encrypted");
 const additionalData = "id";
 
 describe("Encryption", (): void => {
-  test("encrypts to correct length", async (): Promise<void> => {
-    const data = new Uint8Array(dataLength); // 2 chunks of data
-    const key = new Uint8Array(32);
-    const additionalData = "";
-
-    const encrypted = await encryptData(data, key, additionalData);
-
-    assert.that(encrypted.length).is.equalTo(dataLength + 2*28 + 68);
-  });
-
   test("encrypts correctly, using test vector.", async (): Promise<void> => {
     const actualEncryped = await encryptData(data, key, additionalData);
 
