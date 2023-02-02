@@ -1,5 +1,8 @@
 export default interface MasterKey {
+  version: string,
   cost: number,
   salt: string,
-  wrappedKey: string
+  wrappedEncryptionKey: string,
+  wrappedVersionMacKey: string,
+  versionMac: string
 }
