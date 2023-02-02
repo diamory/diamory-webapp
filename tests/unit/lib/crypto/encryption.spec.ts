@@ -1,7 +1,7 @@
 import { assert } from "assertthat";
 import { encryptData, decryptData } from "@/lib/crypto/encryption";
-import { encrypt } from "@/lib/crypto/aesgcm";
 import { randomBytes } from "crypto";
+import { readFileSync } from "fs";
 
 jest.mock("@/lib/crypto/webcrypto", () => {
   const originalModule = jest.requireActual("@/lib/crypto/webcrypto");
@@ -15,28 +15,12 @@ jest.mock("@/lib/crypto/webcrypto", () => {
 });
 
 const dataLength = 33_000;
-const chunkLength = 32_768;
 
-const getTestVector = async () => {
-  const headerPayload = Buffer.from(`${"ff".repeat(8)}${"00".repeat(32)}`, "hex");
-  const chunk1Payload = new Uint8Array(chunkLength);
-  const chunk2Payload = new Uint8Array(dataLength - chunkLength);
-  const key = new Uint8Array(32);
-  const nonce = new Uint8Array(12);
-  const headerAdditionalData = Buffer.concat([Buffer.from("id", "utf8"), Buffer.from("0002", "hex")]);
-  const chunk1AdditionalData = Buffer.concat([Buffer.from("id", "utf8"), Buffer.from("0001", "hex")]);
-  const chunk2AdditionalData = Buffer.concat([Buffer.from("id", "utf8"), Buffer.from("0002", "hex")]);
-  const headerCipherAndTag = await encrypt(headerPayload, key, nonce, headerAdditionalData);
-  const chunk1CipherAndTag = await encrypt(chunk1Payload, key, nonce, chunk1AdditionalData);
-  const chun2kCipherAndTag = await encrypt(chunk2Payload, key, nonce, chunk2AdditionalData);
-
-  return {
-  data: new Uint8Array(dataLength),
-  key,
-  addidtionalData: "id",
-  encrypted: Buffer.concat([ nonce, headerCipherAndTag, nonce, chunk1CipherAndTag, nonce, chun2kCipherAndTag ])
-  };
-};
+// // encryption results for testing has been determined with internal core implementations, before they were hard coded here
+const key = new Uint8Array(32);
+const data = new Uint8Array(dataLength);
+const encrypted = readFileSync("./tests/testdata/encrypted");
+const additionalData = "id";
 
 describe("Encryption", (): void => {
   test("encrypts to correct length", async (): Promise<void> => {
@@ -50,17 +34,13 @@ describe("Encryption", (): void => {
   });
 
   test("encrypts correctly, using test vector.", async (): Promise<void> => {
-    const { data, key, addidtionalData, encrypted } = await getTestVector();
-
-    const actualEncryped = await encryptData(data, key, addidtionalData);
+    const actualEncryped = await encryptData(data, key, additionalData);
 
     assert.that(actualEncryped).is.equalTo(encrypted);
   });
 
   test("decrypts correctly, using test vector.", async (): Promise<void> => {
-    const { data, key, addidtionalData, encrypted } = await getTestVector();
-
-    const actualDecryped = await decryptData(encrypted, key, addidtionalData);
+    const actualDecryped = await decryptData(encrypted, key, additionalData);
 
     assert.that(actualDecryped).is.equalTo(data);
   });
