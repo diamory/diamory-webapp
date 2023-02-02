@@ -3,8 +3,8 @@ import { encryptData, decryptData } from "@/lib/crypto/encryption";
 import { encrypt } from "@/lib/crypto/aesgcm";
 import { randomBytes } from "crypto";
 
-jest.mock('@/lib/crypto/webcrypto', () => {
-  const originalModule = jest.requireActual('@/lib/crypto/webcrypto');
+jest.mock("@/lib/crypto/webcrypto", () => {
+  const originalModule = jest.requireActual("@/lib/crypto/webcrypto");
 
   return {
     ...originalModule,
