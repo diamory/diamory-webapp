@@ -16,7 +16,6 @@ jest.mock("@/lib/crypto/webcrypto", () => {
 
 const dataLength = 33_000;
 
-// // encryption results for testing has been determined with internal core implementations, before they were hard coded here
 const key = new Uint8Array(32).fill(32);
 const data = new Uint8Array(dataLength);
 const encrypted = readFileSync("./tests/testdata/encrypted");

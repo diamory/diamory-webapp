@@ -13,7 +13,6 @@ jest.mock("@/lib/crypto/webcrypto", () => {
   };
 });
 
-// wrapping and hmac results for testing has been determined with internal core implementations, before they were hard coded here
 const password = "pleaseletmein";
 const password2 = "pleaseletmein42";
 const salt = Buffer.from(new Uint8Array(16).fill(16)).toString("base64");
