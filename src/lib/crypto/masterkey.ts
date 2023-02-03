@@ -3,9 +3,7 @@ import { sign, verify } from "./hmac";
 import { deriveKey } from "./scrypt";
 import { getRandomValues } from "./webcrypto";
 import { decryptKey, encryptKey } from "./wrapping";
-
-const cost = 65_536;
-const version = "initial";
+import { version, cost } from "./props";
 
 interface Keys {
   version: string,

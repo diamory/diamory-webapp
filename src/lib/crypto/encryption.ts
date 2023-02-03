@@ -1,7 +1,6 @@
 import { getRandomValues } from "./webcrypto";
 import { encrypt, decrypt } from "./aesgcm";
-
-const chunkLength = 32_768; //32Kib
+import { chunkLength } from "./props";
 
 const createAssociatedData = (id: string, n: number): Uint8Array => {
   const nFirstByte = Math.floor(n / 256)
@@ -71,4 +70,4 @@ const decryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promi
   return Buffer.concat(toJoin);
 }
 
-export { encryptData, decryptData };
+export { encryptData, decryptData, chunkLength };
