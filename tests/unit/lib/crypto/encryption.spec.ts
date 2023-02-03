@@ -1,7 +1,6 @@
 import { assert } from "assertthat";
 import { encryptData, decryptData } from "@/lib/crypto/encryption";
 import { randomBytes } from "crypto";
-import { readFileSync } from "fs";
 
 jest.mock("@/lib/crypto/webcrypto", () => {
   const originalModule = jest.requireActual("@/lib/crypto/webcrypto");
@@ -14,11 +13,20 @@ jest.mock("@/lib/crypto/webcrypto", () => {
   };
 });
 
-const dataLength = 33_000;
+jest.mock("@/lib/crypto/props", () => {
+  const originalModule = jest.requireActual("@/lib/crypto/props");
+
+  return { ...originalModule, chunkLength: 64 };
+});
+
+const dataLength = 96;
 
 const key = new Uint8Array(32).fill(32);
 const data = new Uint8Array(dataLength);
-const encrypted = readFileSync("./tests/testdata/encrypted");
+const encrypted = Buffer.from(
+  "DAwMDAwMDAwMDAwMkNe1gS6RkABghQk9Vox2Q+VTh5YFbz8x0Fi1HIWCjzGsO3QWJeJiyIg/UcX23a4wRxT8En2Jw6oMDAwMDAwMDAwMDAxvKEp+0W5v/0ClKR12rFZjxXOntiVPHxHweJU8paKvEYwbVDYFwkLoxBSsk5wrWf7KjGEQ3sukwf1ESgqi4n0rZmRdzK9nangN0EpyCofUGwwMDAwMDAwMDAwMDG8oSn7Rbm//QKUpHXasVmPFc6e2JU8fEfB4lTyloq8Rw843ev3TiXY4hubeAMw9Ug==",
+  "base64"
+);
 const additionalData = "id";
 
 describe("Encryption", (): void => {
