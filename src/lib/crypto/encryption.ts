@@ -3,9 +3,8 @@ import { encrypt, decrypt } from "./aesgcm";
 import { chunkLength } from "./props";
 
 const createAssociatedData = (id: string, n: number): Uint8Array => {
-  const nFirstByte = Math.floor(n / 256)
-  const nSecondByte = n - nFirstByte;
-  const nAsTwoByte = new Uint8Array([ nFirstByte, nSecondByte ]);
+  const nAsTwoByte = Buffer.alloc(2);
+  nAsTwoByte.writeUint16BE(n);
   return Buffer.concat([
     Buffer.from(id, "utf8"),
     nAsTwoByte
@@ -36,7 +35,7 @@ const encryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promi
   const headerAdditionalData = createAssociatedData(id, chunkN);
   const headerCipherAndTag = await encrypt(headerPayload, key, headerNonce, headerAdditionalData);
   const toJoin = [ headerNonce, headerCipherAndTag ];
-  
+
   for (let chunkNo = 1; chunkNo <= chunkN; chunkNo++) {
     const [ nonce, cipherAndTag ] = await encryptChunk(data, contentKey, id, chunkNo);
     toJoin.push(nonce, cipherAndTag);
@@ -62,7 +61,7 @@ const decryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promi
   const headerAdditionalData = createAssociatedData(id, chunkN);
   const contentKey = (await decrypt(headerCipherAndTag, key, headerNonce, headerAdditionalData)).subarray(8, 40);
   const toJoin = [];
-  
+
   for (let chunkNo = 1; chunkNo <= chunkN; chunkNo++) {
     toJoin.push(await decryptChunk(data, contentKey, id, chunkNo));
   }
