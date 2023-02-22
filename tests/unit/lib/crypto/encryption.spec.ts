@@ -62,6 +62,6 @@ describe("Encryption", (): void => {
     
     assert.that(async (): Promise<void> => {
       await decryptData(encrypted, key, additionalData);
-    }).is.throwingAsync("Cipher job failed");
+    }).is.throwingAsync("The operation failed for an operation-specific reason");
   });
 });

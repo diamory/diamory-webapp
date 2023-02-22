@@ -65,7 +65,7 @@ describe("Master", (): void => {
   test("throws exception due to invalid password.", async (): Promise<void> => {
     assert.that(async (): Promise<void> => {
       await getEncryptionKey("invalid", expectedMasterKeyObject);
-    }).is.throwingAsync("Cipher job failed");
+    }).is.throwingAsync("The operation failed for an operation-specific reason");
   });
 
   test("throws exception due to invalid version.", async (): Promise<void> => {

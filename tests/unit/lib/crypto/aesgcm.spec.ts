@@ -34,6 +34,6 @@ describe("AES GCM", (): void => {
 
     assert.that(async (): Promise<void> => {
       await decrypt(cipherAndTag, key, nonce, additionalData);
-    }).is.throwingAsync("Cipher job failed");
+    }).is.throwingAsync("The operation failed for an operation-specific reason");
   });
 });
