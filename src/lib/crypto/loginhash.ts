@@ -1,5 +1,5 @@
-import { deriveHash } from "./pbkdf2";
-import { loginPepper, iterations } from "./props";
+import { deriveHash } from './pbkdf2';
+import { loginPepper, iterations } from './props';
 
 const createLoginHash = async (username: string, password: string): Promise<string> => {
   const spice = `${loginPepper}_${username}`;

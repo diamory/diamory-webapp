@@ -1,7 +1,7 @@
-import { createLoginHash } from "./loginhash";
-import { createMasterKey, updateMasterKey, getEncryptionKey, getCryptoVersion } from "./masterkey";
-import { encryptData, decryptData } from "./encryption";
-import { randomUUID } from "./webcrypto";
+import { createLoginHash } from './loginhash';
+import { createMasterKey, updateMasterKey, getEncryptionKey, getCryptoVersion } from './masterkey';
+import { encryptData, decryptData } from './encryption';
+import { randomUUID } from './webcrypto';
 
 export {
   createLoginHash,

@@ -1,29 +1,29 @@
-import { getRandomValues } from "./webcrypto";
-import { encrypt, decrypt } from "./aesgcm";
-import { chunkLength } from "./props";
+import { getRandomValues } from './webcrypto';
+import { encrypt, decrypt } from './aesgcm';
+import { chunkLength } from './props';
 
 const createAssociatedData = (id: string, n: number): Uint8Array => {
   const nAsTwoByte = Buffer.alloc(2);
   nAsTwoByte.writeUint16BE(n);
-  return Buffer.concat([
-    Buffer.from(id, "utf8"),
-    nAsTwoByte
-  ]);
+  return Buffer.concat([Buffer.from(id, 'utf8'), nAsTwoByte]);
 };
 
-const createHeaderPayload = (contentKey: Uint8Array): Uint8Array => Buffer.concat([ 
-    Buffer.from("ff".repeat(8), "hex"),
-    contentKey
-]);
+const createHeaderPayload = (contentKey: Uint8Array): Uint8Array =>
+  Buffer.concat([Buffer.from('ff'.repeat(8), 'hex'), contentKey]);
 
-const encryptChunk = async (data: Uint8Array, contentKey: Uint8Array, id: string, chunkNo: number): Promise<Uint8Array[]> => {
+const encryptChunk = async (
+  data: Uint8Array,
+  contentKey: Uint8Array,
+  id: string,
+  chunkNo: number
+): Promise<Uint8Array[]> => {
   const chunkStart = (chunkNo - 1) * chunkLength;
   const chunkStop = Math.min(chunkStart + chunkLength, data.length);
   const chunkNonce = getRandomValues(new Uint8Array(12));
   const chunkPayload = data.subarray(chunkStart, chunkStop);
   const chunkAdditionalData = createAssociatedData(id, chunkNo);
   const chunkCipherAndTag = await encrypt(chunkPayload, contentKey, chunkNonce, chunkAdditionalData);
-  return [ chunkNonce, chunkCipherAndTag ];
+  return [chunkNonce, chunkCipherAndTag];
 };
 
 const encryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promise<Uint8Array> => {
@@ -34,17 +34,22 @@ const encryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promi
   const headerPayload = createHeaderPayload(contentKey);
   const headerAdditionalData = createAssociatedData(id, chunkN);
   const headerCipherAndTag = await encrypt(headerPayload, key, headerNonce, headerAdditionalData);
-  const toJoin = [ headerNonce, headerCipherAndTag ];
+  const toJoin = [headerNonce, headerCipherAndTag];
 
   for (let chunkNo = 1; chunkNo <= chunkN; chunkNo++) {
-    const [ nonce, cipherAndTag ] = await encryptChunk(data, contentKey, id, chunkNo);
+    const [nonce, cipherAndTag] = await encryptChunk(data, contentKey, id, chunkNo);
     toJoin.push(nonce, cipherAndTag);
   }
 
   return Buffer.concat(toJoin);
 };
 
-const decryptChunk = async (data: Uint8Array, contentKey: Uint8Array, id: string, chunkNo: number): Promise<Uint8Array> => {
+const decryptChunk = async (
+  data: Uint8Array,
+  contentKey: Uint8Array,
+  id: string,
+  chunkNo: number
+): Promise<Uint8Array> => {
   const chunkStart = (chunkNo - 1) * (chunkLength + 28) + 68;
   const chunkStop = Math.min(chunkStart + chunkLength + 28, data.length);
   const chunkNonce = data.subarray(chunkStart, chunkStart + 12);
@@ -55,7 +60,7 @@ const decryptChunk = async (data: Uint8Array, contentKey: Uint8Array, id: string
 
 const decryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promise<Uint8Array> => {
   const dataLength = data.length;
-  const chunkN = Math.ceil((dataLength - 68) / (chunkLength + 28 ));
+  const chunkN = Math.ceil((dataLength - 68) / (chunkLength + 28));
   const headerNonce = data.subarray(0, 12);
   const headerCipherAndTag = data.subarray(12, 68);
   const headerAdditionalData = createAssociatedData(id, chunkN);
@@ -67,6 +72,6 @@ const decryptData = async (data: Uint8Array, key: Uint8Array, id: string): Promi
   }
 
   return Buffer.concat(toJoin);
-}
+};
 
 export { encryptData, decryptData, chunkLength };
