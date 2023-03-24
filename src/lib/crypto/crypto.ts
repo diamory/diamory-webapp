@@ -1,6 +1,7 @@
 import { createLoginHash } from './loginhash';
 import { createMasterKey, updateMasterKey, getEncryptionKey, getCryptoVersion } from './masterkey';
 import { encryptData, decryptData } from './encryption';
+import { sha256 } from './sha256';
 import { randomUUID } from './webcrypto';
 
 export {
@@ -11,5 +12,6 @@ export {
   getCryptoVersion,
   encryptData,
   decryptData,
+  sha256,
   randomUUID
 };
