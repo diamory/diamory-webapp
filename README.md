@@ -50,6 +50,9 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Deploy
-To deploy to AWS amplify, use [this method](https://eu-central-1.console.aws.amazon.com/amplify/home?region=eu-central-1#/create/manual) \
-Simply drag and drop the `dist` directory into the dropzone. \
-Always use the `main` branch as base for Prod environment and `dev` branch as base for staging environment
+
+### Dev
+Simply merge to `dev` branch
+
+### Prod
+Simply merge to `main` branch
