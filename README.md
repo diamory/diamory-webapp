@@ -1,4 +1,18 @@
-# diamory-browser
+# diamory-webapp
+
+diamory is a wonderful diary app
+
+## Key Features
+
+* Multiple diaries
+* Always free
+* No hard limits
+* Images
+* Voice Records
+* Preferred Timestamps
+* Filters and search
+* Versioning and trashing
+* and much more
 
 ## Project setup
 ```
