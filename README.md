@@ -14,7 +14,9 @@ diamory is a wonderful diary app
 * Versioning and trashing
 * and much more
 
-## Project setup
+## Scripts
+
+### Project setup
 ```
 npm install
 ```
@@ -44,5 +46,10 @@ npm run test:e2e
 npm run lint
 ```
 
-### Customize configuration
+## Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Deploy
+To deploy to AWS amplify, use [this method](https://eu-central-1.console.aws.amazon.com/amplify/home?region=eu-central-1#/create/manual) \
+Simply drag and drop the `dist` directory into the dropzone. \
+Always use the `main` branch as base for Prod environment and `dev` branch as base for staging environment
